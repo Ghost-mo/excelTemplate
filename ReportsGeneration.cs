@@ -115,24 +115,31 @@ namespace ReportGenerations
                             }
                             else if (cellValue.ToString().Contains("${"))
                             {
-                                if (!cellValue.ToString().Substring(cellValue.ToString().IndexOf("${")).Contains("."))//todo в др метса
+                                if (cellValue.ToString().Contains("${graf"))//todo реализовать метки для нескольких графиков думаю через заголовок графика
                                 {
-                                    if (cellValue.ToString().Contains("${graf}"))//todo реализовать метки для нескольких графиков думаю через заголовок графика
+                                    var name = cellValue.ToString().Substring(cellValue.ToString().IndexOf(".") + 1);
+                                    name = name.Substring(0, name.IndexOf("}"));//имя можно посмотреть там же где задается именнованный ряд, изменить имя можно на вкладке графика
+                                    ws.Cells[indexRow, indexColum].Value = null;
+                                    var tempChar = ws.Drawings[name] as ExcelChart;
+                                        tempChar.SetPosition(indexRow - 1, 0, indexColum - 1, 0);//двигаем график на нужное место
+
+                                    while (tempChar.Title.Text.Contains("${"))//обработка нескольких переменных в одной ячейке
                                     {
-                                        ws.Cells[indexRow, indexColum].Value = null;
-                                        ws.Drawings[0].SetPosition(indexRow - 1, 0, indexColum - 1, 0);//двигаем график на нужное место
+                                        var templateValue = tempChar.Title.Text.Substring(tempChar.Title.Text.IndexOf("${"));
+                                        templateValue = templateValue.Substring(0, templateValue.IndexOf("}") + 1);
+                                        tempChar.Title.Text = cellValue.ToString().Replace(templateValue, (string)dST.values[templateValue.Replace("${", "").Replace("}", "")]);
                                     }
-                                    else
+                                  }
+                                else if (!cellValue.ToString().Substring(cellValue.ToString().IndexOf("${")).Contains("."))//todo в др метса
+                                {
+                                    var tempValue = cellValue.ToString();
+                                    while (tempValue.Contains("${"))//обработка нескольких переменных в одной ячейке
                                     {
-                                        var tempValue = cellValue.ToString();
-                                        while (tempValue.Contains("${"))//обработка нескольких переменных в одной ячейке
-                                        {
-                                            var templateValue = tempValue.Substring(tempValue.IndexOf("${"));
-                                            templateValue = templateValue.Substring(0, templateValue.IndexOf("}") + 1);
-                                            tempValue = cellValue.ToString().Replace(templateValue, (string)dST.values[templateValue.Replace("${", "").Replace("}", "")]);
-                                        }
-                                        ws.Cells[indexRow, indexColum].Value = tempValue;
+                                        var templateValue = tempValue.Substring(tempValue.IndexOf("${"));
+                                        templateValue = templateValue.Substring(0, templateValue.IndexOf("}") + 1);
+                                        tempValue = cellValue.ToString().Replace(templateValue, (string)dST.values[templateValue.Replace("${", "").Replace("}", "")]);
                                     }
+                                    ws.Cells[indexRow, indexColum].Value = tempValue;
                                 }
                                 else
                                 {
