@@ -1,5 +1,7 @@
 # excelTemplate
-Формировалка отчетов по excell шаблону
+Формирование отчетов по excell шаблону.
+(report generation by template).
+Если интересно напишите, обновлю.
 
 В DataSet прописан Dictionary<string,string> values
 
