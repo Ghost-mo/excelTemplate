@@ -1,5 +1,5 @@
 # excelTemplate
-Skype: gh0st-m0
+Skype: gh0st-m0 @: Ghost-mo@mail.ru
 
 Формирование отчетов по excell шаблону.
 (report generation by template).
